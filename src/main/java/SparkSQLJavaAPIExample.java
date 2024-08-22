@@ -6,6 +6,8 @@ import static org.apache.spark.sql.functions.*;
 
 public class SparkSQLJavaAPIExample {
     public static void main(String[] args) {
+        long startTime = System.nanoTime();
+
         SparkSession sparkSession = SparkSession.builder().appName("TestingSparkSQLJavaAPIWithLargeData").master("local[*]").getOrCreate();
         Dataset<Row> dataset = sparkSession.read().option("header", true).csv("src/main/resources/biglog.txt");
 
@@ -20,5 +22,7 @@ public class SparkSQLJavaAPIExample {
         groupedResults = groupedResults.orderBy(col("month_number"), col("level"));
         groupedResults = groupedResults.drop(col("month_number"));
         groupedResults.show(100);
+        groupedResults.explain();
+        System.out.println( "Time taken: " +  (System.nanoTime() -startTime)/1000000 ) ;
     }
 }
